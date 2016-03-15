@@ -242,8 +242,13 @@ class MarkupGenerator {
       }).join('');
       let entity = entityKey ? Entity.get(entityKey) : null;
       if (entity != null && entity.getType() === ENTITY_TYPE.LINK) {
-        let url = entity.getData().url || '';
-        return `<a href="${encodeAttr(url)}">${content}</a>`;
+        const {url = '', ...data} = entity.getData();
+        const entityAttributes = {href: url, ...data};
+        const linkAtributes = Object.keys(entityAttributes).map(
+          attribute => `${attribute}="${encodeAttr( entityAttributes[attribute] )}"`
+        )
+        .join(' ');
+        return `<a ${linkAtributes}>${content}</a>`;
       } else {
         return content;
       }
